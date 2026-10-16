@@ -52,11 +52,11 @@ JSON 结构（示例值均为占位，不代表可用身份）：
   "os_api": "28",
   "resolution": "1080*1920",
   "dpi": "320",
-  "build": "build_fingerprint"
+  "build": "build_fingerprint",
+  "manifest_version_code": "12345",
+  "update_version_code": "12345",
+  "pv_player": "12345"
 }
-```
-
-`manifest_version_code`、`update_version_code`、`pv_player` 可省略，会自动取 `version_code` 的值；若服务端限制最高清晰度，可显式提供这三个字段
 ```
 
 | 字段 | 要求 |
@@ -66,6 +66,7 @@ JSON 结构（示例值均为占位，不代表可用身份）：
 | `channel` | 必填，非空 |
 | `aid` | 必填，固定 `8662` |
 | 其余字段 | 建议完整填写；缺省字段会保留占位值，请求特征不完整容易被服务端拒绝 |
+| `manifest_version_code` 等 | 可省略，自动取 `version_code`；若最高清晰度受限，可显式提供 |
 
 各字段取值来自你本人设备上官方客户端的请求参数。请只使用属于你自己的身份，使用他人身份的风险自负。
 
