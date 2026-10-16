@@ -56,6 +56,9 @@ JSON 结构（示例值均为占位，不代表可用身份）：
 }
 ```
 
+`manifest_version_code`、`update_version_code`、`pv_player` 可省略，会自动取 `version_code` 的值；若服务端限制最高清晰度，可显式提供这三个字段
+```
+
 | 字段 | 要求 |
 | --- | --- |
 | `device_id` | 必填，15–20 位数字 |
