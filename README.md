@@ -1,20 +1,71 @@
-# baiguotv-release
+# 白果TV 发布
 
-白果TV 安卓应用发布仓库（源码保持私有：zqs1qiwan/baiguotv）。
+白果TV 安卓 TV 应用（Android 8.0+）的官方发布仓库。本仓库只存放发布产物，不包含源码。
+
+## 架构概要（脱敏）
+
+- 原生 Android TV 客户端，单 APK，无自建服务端，不收集任何数据
+- 内容数据来自公开内容平台的公开接口
+- 请求所需的设备身份由用户在首次启动时扫码自助导入，应用内不内置任何设备凭据
+- 收藏、观看进度、偏好全部保存在电视本机；换机通过手机扫码在本机与手机之间直传
+- 应用内更新读取本仓库 `update.json`，下载后校验大小、SHA-256 与签名，再交由系统安装
 
 ## 下载
 
-在 [Releases](https://github.com/zqs1qiwan/baiguotv-release/releases) 页面下载最新 APK。
+在 [Releases](https://github.com/zqs1qiwan/baiguotv-release/releases) 页面下载最新正式版 APK。
 
 ## 应用内自动更新
 
-应用启动后会读取 `https://github.com/zqs1qiwan/baiguotv-release/releases/latest/download/update.json` 检查新版本，前台空闲时每 6 小时检查一次，播放中不打扰。下载完成后校验 SHA-256 并提示安装。
+- 打开应用后自动检查一次新版本；也可以在「设置 → 版本与更新」手动检查
+- 发现新版本后自动下载并校验，确认后由系统覆盖安装，本机数据保留
+- 检查清单地址：`https://github.com/zqs1qiwan/baiguotv-release/releases/latest/download/update.json`
 
-## 文件说明
+## 发布物
 
-| 文件 | 用途 |
+| 文件 | 说明 |
 | --- | --- |
-| `baiguotv-<版本>-android8.apk` | 正式版安装包（Android 8+） |
-| `baiguotv-<版本>-debug.apk` | 调试版安装包 |
-| `update.json` | 应用内自动更新清单（schema 1） |
-| `SHA256SUMS` | 全部文件校验和 |
+| `baiguotv-<版本>-android8.apk` | 正式版安装包（签名 + 代码混淆） |
+| `update.json` | 应用内更新清单（schema 1） |
+| `SHA256SUMS` | 上述文件的 SHA-256 校验和 |
+
+调试构建仅用于内部测试，不在本仓库发布。
+
+## 首次使用：设备身份
+
+应用不含任何可用设备身份，首次启动必须导入一份属于你自己的设备身份才能使用。
+
+操作：启动应用 → 出现二维码 → 用手机浏览器打开该地址 → 把设备身份 JSON 粘贴进输入框提交。身份只保存在电视本机，不上传到任何第三方。
+
+JSON 结构（示例值均为占位，不代表可用身份）：
+
+```json
+{
+  "device_id": "123456789012345",
+  "iid": "123456789012345",
+  "channel": "your_channel",
+  "aid": "8662",
+  "version_code": "12345",
+  "version_name": "1.2.3.4",
+  "device_type": "device_model",
+  "device_brand": "brand_name",
+  "os_version": "9",
+  "os_api": "28",
+  "resolution": "1080*1920",
+  "dpi": "320",
+  "build": "build_fingerprint"
+}
+```
+
+| 字段 | 要求 |
+| --- | --- |
+| `device_id` | 必填，15–20 位数字 |
+| `iid` | 必填，15–20 位数字 |
+| `channel` | 必填，非空 |
+| `aid` | 必填，固定 `8662` |
+| 其余字段 | 建议完整填写；缺省字段会保留占位值，请求特征不完整容易被服务端拒绝 |
+
+各字段取值来自你本人设备上官方客户端的请求参数。请只使用属于你自己的身份，使用他人身份的风险自负。
+
+## 关于文档详细程度
+
+客户端特征、协议参数与签名实现细节不在本文档公开：这些内容一旦公开，容易被批量识别并遭到针对性封禁，最终影响所有使用者的可用性，因此刻意省略。
